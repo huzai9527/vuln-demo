@@ -105,7 +105,7 @@ func (m *Mysql) commit(items []nvd.Item) error {
 		lastModifiedDate, _ := time.Parse("2006-01-02T15:04Z", item.LastModifiedDate)
 
 		vuln := types.VulnerabilityDetail{
-			CVEID:            cveID,
+			CveId:            cveID,
 			CvssScore:        item.Impact.BaseMetricV2.CvssV2.BaseScore,
 			CvssVector:       item.Impact.BaseMetricV2.CvssV2.VectorString,
 			CvssScoreV3:      item.Impact.BaseMetricV3.CvssV3.BaseScore,

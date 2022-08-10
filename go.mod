@@ -11,6 +11,7 @@ require (
 )
 
 require (
+	github.com/araddon/dateparse v0.0.0-20190426192744-0d74ffceef83 // indirect
 	github.com/briandowns/spinner v1.12.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/elazarl/goproxy v0.0.0-20220529153421-8ea89ba92021 // indirect

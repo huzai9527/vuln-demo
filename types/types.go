@@ -69,7 +69,7 @@ type LastUpdated struct {
 type VulnerabilityDetail struct {
 	Id int64 `json:",omitempty" `
 	// CVE编号
-	CVEID string `json:",omitempty" xorm:"varchar(255)"` // e.g. CVE-2019-8331, OSVDB-104365
+	CveId string `json:",omitempty" xorm:"varchar(255)"` // e.g. CVE-2019-8331, OSVDB-104365
 	// 漏洞评分等级，有几种表达方式（nvd/redhat）
 	// 不同厂商会有不一样的评分
 	CvssScore    float64 `json:",omitempty" xorm:"float"`
@@ -114,6 +114,12 @@ type DataSource struct {
 // Advisory 有关漏洞的建议，实际上是初筛报告
 // 后面会根据的版本进行筛选
 type Advisory struct {
+	// 用于sql主键递增
+	Id int64 `json:",omitempty" `
+	// 操作系统版本
+	PlatformName string `json:",omitempty" xorm:"text"`
+	// pkg名称
+	PackageName string `json:",omitempty" xorm:"text"`
 	// 对应的CVE ID
 	VulnerabilityID string `json:",omitempty" xorm:"text"` // CVE-ID or vendor ID
 	// 其他q的厂商对应的ID
