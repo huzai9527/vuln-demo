@@ -6,11 +6,15 @@ require (
 	github.com/aquasecurity/trivy-db v0.0.0-20220801073337-2c0339bb9085
 	github.com/aquasecurity/vuln-list-update v0.0.0-20210902160608-378edf0454ff
 	github.com/go-sql-driver/mysql v1.6.0
+	github.com/knqyf263/go-cpe v0.0.0-20201213041631-54f6ab28673f
+	github.com/tamerh/xml-stream-parser v1.4.0
+	github.com/tidwall/gjson v1.14.3
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f
 	xorm.io/xorm v1.3.1
 )
 
 require (
+	github.com/antchfx/xpath v1.2.1 // indirect
 	github.com/araddon/dateparse v0.0.0-20190426192744-0d74ffceef83 // indirect
 	github.com/briandowns/spinner v1.12.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -36,14 +40,17 @@ require (
 	github.com/stretchr/objx v0.4.0 // indirect
 	github.com/stretchr/testify v1.8.0 // indirect
 	github.com/syndtr/goleveldb v1.0.0 // indirect
+	github.com/tamerh/xpath v1.0.0 // indirect
+	github.com/tidwall/match v1.1.1 // indirect
+	github.com/tidwall/pretty v1.2.0 // indirect
 	go.etcd.io/bbolt v1.3.6 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
 	go.uber.org/zap v1.21.0 // indirect
 	golang.org/x/net v0.0.0-20220805013720-a33c5aa5df48 // indirect
-	golang.org/x/sys v0.0.0-20220804214406-8e32c043e418 // indirect
+	golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab // indirect
 	golang.org/x/text v0.3.7 // indirect
-	golang.org/x/tools v0.1.10-0.20220218145154-897bd77cd717 // indirect
+	golang.org/x/tools v0.1.12 // indirect
 	gopkg.in/cheggaaa/pb.v1 v1.0.28 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	modernc.org/sqlite v1.17.3 // indirect

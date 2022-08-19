@@ -61,7 +61,6 @@ func (m *Mysql) Init(dsn string) (err error) {
 		return err
 	}
 	// 这里应该在最开始的时候删除，中间过程中不可以删除
-	// 否则会丢失数据，这里目前只有nvd，方便调试
 	if err := engine.DropTables(new(types.VulnerabilityDetail), new(types.Advisory)); err != nil {
 		return err
 	}
@@ -109,7 +108,7 @@ func (o *Mysql) save(cves []ubuntu.UbuntuCVE) error {
 				platformName := fmt.Sprintf(platformFormat, osVersion)
 				adv := types.Advisory{
 					PlatformName:    platformName,
-					VulnerabilityID: cve.Candidate,
+					VulnerabilityId: cve.Candidate,
 					PackageName:     pkgName,
 				}
 				if status.Status == "released" {
@@ -118,15 +117,17 @@ func (o *Mysql) save(cves []ubuntu.UbuntuCVE) error {
 				if _, err := o.Engine.Insert(adv); err != nil {
 					return xerrors.Errorf("failed to save Ubuntu advisory: %w", err)
 				}
-				vuln := types.VulnerabilityDetail{
-					CveId:       cve.Candidate,
-					Severity:    SeverityFromPriority(cve.Priority),
-					References:  cve.References,
-					Description: cve.Description,
-				}
-				if _, err := o.Engine.Insert(vuln); err != nil {
-					xerrors.Errorf("failed to save Ubuntu vulnerability: %w", err)
-				}
+				// vulnerabilityDetail 来源从 nvd 获取到的更加规范
+				// 这里可以不用收集该信息
+				// vuln := types.VulnerabilityDetail{
+				// 	CveId:       cve.Candidate,
+				// 	Severity:    SeverityFromPriority(cve.Priority),
+				// 	References:  cve.References,
+				// 	Description: cve.Description,
+				// }
+				// if _, err := o.Engine.Insert(vuln); err != nil {
+				// 	xerrors.Errorf("failed to save Ubuntu vulnerability: %w", err)
+				// }
 			}
 		}
 	}

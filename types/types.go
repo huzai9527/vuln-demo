@@ -80,7 +80,7 @@ type VulnerabilityDetail struct {
 	Severity   Severity `json:",omitempty" xorm:"text"`
 	SeverityV3 Severity `json:",omitempty" xorm:"text"`
 	// 漏洞相关的CWE编号ID
-	CweIDs []string `json:",omitempty" xorm:"text"` // e.g. CWE-78, CWE-89
+	CweIds []string `json:",omitempty" xorm:"text"` // e.g. CWE-78, CWE-89
 	// 相关的参考连接
 	References []string `json:",omitempty" xorm:"text"`
 	// 漏洞标题
@@ -116,39 +116,39 @@ type DataSource struct {
 type Advisory struct {
 	// 用于sql主键递增
 	Id int64 `json:",omitempty" `
-	// 操作系统版本
+	// 不同的平台名称
 	PlatformName string `json:",omitempty" xorm:"text"`
 	// pkg名称
 	PackageName string `json:",omitempty" xorm:"text"`
 	// 对应的CVE ID
-	VulnerabilityID string `json:",omitempty" xorm:"text"` // CVE-ID or vendor ID
-	// 其他q的厂商对应的ID
-	VendorIDs []string `json:",omitempty" xorm:"text"` // e.g. RHSA-ID and DSA-ID
-
+	VulnerabilityId string `json:",omitempty" xorm:"text"` // CVE-ID or vendor ID
+	// 其他的厂商对应的ID
+	VendorIds []string `json:",omitempty" xorm:"text"` // e.g. RHSA-ID and DSA-ID
+	// 不同的架构 ubuntu x86 和 arm
 	// Rpm packages have advisories for different architectures with same package name
 	// This field is required to separate these packages.
 	Arches []string `json:"-" xorm:"text"`
-
+	// 软件目前的状态
 	// It is filled only when FixedVersion is empty since it is obvious the state is "Fixed" when FixedVersion is not empty.
 	// e.g. Will not fix and Affected
 	State string `json:",omitempty" xorm:"text"`
-
+	// 风险等级
 	// Trivy DB has "vulnerability" bucket and severities are usually stored in the bucket per a vulnerability ID.
 	// In some cases, the advisory may have multiple severities depending on the packages.
 	// For example, CVE-2015-2328 in Debian has "unimportant" for mongodb and "low" for pcre3.
 	// e.g. https://security-tracker.debian.org/tracker/CVE-2015-2328
 	Severity Severity `json:",omitempty" xorm:"text"`
-
+	// 修复的版本以及受影响的版本
 	// Versions for os package
 	FixedVersion    string `json:",omitempty" xorm:"varchar(255)"`
 	AffectedVersion string `json:",omitempty" xorm:"varchar(255)"` // Only for Arch Linux
-
+	// 补丁相关的信息
 	// MajorVersion ranges for language-specific package
 	// Some advisories provide VulnerableVersions only, others provide PatchedVersions and UnaffectedVersions
 	VulnerableVersions []string `json:",omitempty" xorm:"text"`
 	PatchedVersions    []string `json:",omitempty" xorm:"text"`
 	UnaffectedVersions []string `json:",omitempty" xorm:"text"`
-
+	// 数据来源
 	// DataSource holds where the advisory comes from
 	DataSource *DataSource `json:",omitempty" xorm:"text"`
 
@@ -160,7 +160,7 @@ type Vulnerability struct {
 	Title            string         `json:",omitempty" xorm:"text"`
 	Description      string         `json:",omitempty" xorm:"text"`
 	Severity         string         `json:",omitempty" xorm:"text"` // Selected from VendorSeverity, depending on a scan target
-	CweIDs           []string       `json:",omitempty" xorm:"text"` // e.g. CWE-78, CWE-89
+	CweIds           []string       `json:",omitempty" xorm:"text"` // e.g. CWE-78, CWE-89
 	VendorSeverity   VendorSeverity `json:",omitempty" xorm:"text"`
 	CVSS             VendorCVSS     `json:",omitempty" xorm:"text"`
 	References       []string       `json:",omitempty" xorm:"text"`
@@ -173,3 +173,26 @@ type Vulnerability struct {
 
 // Ecosystem represents language-specific ecosystem
 type Ecosystem string
+
+func (v *VulnerabilityDetail) ToVemindVulnerability() VeinmindVulnerability {
+	veinmindVulnerability := VeinmindVulnerability{
+		CveId:            v.CveId,
+		TitleEn:          v.Title,
+		DescEn:           v.Description,
+		PublishedDate:    v.PublishedDate,
+		LastModifiedDate: v.LastModifiedDate,
+		Severity:         v.Severity,
+		CvssScoreV3:      v.CvssScoreV3,
+		CvssScore:        v.CvssScore,
+		CvssVector:       v.CvssVector,
+		CvssVectorV3:     v.CvssVectorV3,
+		References:       v.References,
+		Cwes:             v.CweIds,
+	}
+	return veinmindVulnerability
+}
+
+type Mysql interface {
+	Init(dsn string) error
+	Update(dir string) error
+}

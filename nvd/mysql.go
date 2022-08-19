@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"path/filepath"
 	"strings"
 	"time"
 	"vuln-list-update/types"
@@ -43,11 +42,9 @@ const (
 )
 
 func (m *Mysql) Update(dir string) error {
-	rootDir := filepath.Join(dir, "vuln-list", nvdDir)
-
 	var items []nvd.Item
 	buffer := &bytes.Buffer{}
-	err := utils.FileWalk(rootDir, func(r io.Reader, _ string) error {
+	err := utils.FileWalk(dir, func(r io.Reader, _ string) error {
 		item := nvd.Item{}
 		if _, err := buffer.ReadFrom(r); err != nil {
 			return xerrors.Errorf("failed to read file: %w", err)
@@ -71,7 +68,6 @@ func (m *Mysql) Update(dir string) error {
 }
 
 func (m *Mysql) commit(items []nvd.Item) error {
-	fmt.Println("len => ", len(items))
 	for _, item := range items {
 		cveID := item.Cve.Meta.ID
 		severity, _ := types.NewSeverity(item.Impact.BaseMetricV2.Severity)
@@ -112,14 +108,13 @@ func (m *Mysql) commit(items []nvd.Item) error {
 			CvssVectorV3:     item.Impact.BaseMetricV3.CvssV3.VectorString,
 			Severity:         severity,
 			SeverityV3:       severityV3,
-			CweIDs:           cweIDs,
+			CweIds:           cweIDs,
 			References:       references,
 			Title:            "",
 			Description:      description,
 			PublishedDate:    &publishedDate,
 			LastModifiedDate: &lastModifiedDate,
 		}
-		fmt.Println(vuln)
 		if _, err := m.Engine.Insert(vuln); err != nil {
 			fmt.Println(err)
 			return err
